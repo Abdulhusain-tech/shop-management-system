@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop - Customer Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ef4444;
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .wishlist-heart {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 10;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .wishlist-heart.active {
+      color: #ef4444;
+    }
+
+    .catalog-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+
+    .catalog-card {
+      position: relative;
+    }
+
+    .stock-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .stock-in {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .stock-out {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .order-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .order-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-processing { background: #dbeafe; color: #1e3a8a; }
+    .status-delivered { background: #d1fae5; color: #065f46; }
+
+    .profile-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin: 0 auto 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="logo">🛒 Shop</h2>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" onclick="showSection('shop'); return false;">
+          <span class="icon">🏠</span>
+          <span>Shop</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('cart'); return false;">
+          <span class="icon" style="position: relative;">
+            🛒
+            <span id="cartBadge" class="cart-badge" style="display: none;">0</span>
+          </span>
+          <span>Cart</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('orders'); return false;">
+          <span class="icon">📦</span>
+          <span>My Orders</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('wishlist'); return false;">
+          <span class="icon">❤️</span>
+          <span>Wishlist</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('profile'); return false;">
+          <span class="icon">👤</span>
+          <span>Profile</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span class="icon">🌙</span>
+          <span>Toggle Theme</span>
+        </button>
+        <button class="logout-btn" onclick="logout()">
+          <span class="icon">🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <!-- SHOP SECTION -->
+      <div id="shopSection">
+        <header class="page-header">
+          <div>
+            <h1>🛍️ Shop Products</h1>
+            <p class="subtitle">Browse and add items to your cart</p>
+          </div>
+        </header>
+        <div id="productCatalog" class="product-catalog"></div>
+      </div>
+
+      <!-- CART SECTION -->
+      <div id="cartSection" style="display: none;">
+        <header class="page-header">
+          <div>
+            <h1>🛒 Shopping Cart</h1>
+            <p class="subtitle">Review your items</p>
+          </div>
+          <button class="btn-primary" onclick="checkout()" id="checkoutBtn">
+            <span>Checkout</span>
+          </button>
+        </header>
+        <div id="cartItems"></div>
+        <div class="card" style="margin-top: 20px;" id="cartTotal">
+          <h3>Order Summary</h3>
+          <div style="display: flex; justify-content: space-between; margin-top: 16px; font-size: 20px; font-weight: 700;">
+            <span>Total:</span>
+            <span id="totalAmount">₹0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDERS SECTION -->
+      <div id="ordersSection" style="display: none;">
+        <header class="page-header">
+          <div>
+            <h1>📦 My Orders</h1>
+            <p class="subtitle">Track your order history</p>
+          </div>
+        </header>
+        <div id="ordersList"></div>
+      </div>
+
+      <!-- WISHLIST SECTION -->
+      <div id="wishlistSection" style="display: none;">
+        <header class="page-header">
+          <div>
+            <h1>❤️ Wishlist</h1>
+            <p class="subtitle">Your saved items</p>
+          </div>
+        </header>
+        <div id="wishlistItems" class="product-catalog"></div>
+      </div>
+
+      <!-- PROFILE SECTION -->
+      <div id="profileSection" style="display: none;">
+        <header class="page-header">
+          <div>
+            <h1>👤 My Profile</h1>
+            <p class="subtitle">Manage your account</p>
+          </div>
+        </header>
+        
+        <div class="profile-section">
+          <div class="profile-avatar">👤</div>
+          <h2 style="text-align: center; margin-bottom: 24px;" id="profileName"></h2>
+          
+          <form onsubmit="updateProfile(event)">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input id="editName" type="text" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input id="editEmail" type="email" disabled>
+            </div>
+            <button type="submit" class="btn-primary">Update Profile</button>
+          </form>
+        </div>
+
+        <div class="profile-section">
+          <h3 style="margin-bottom: 16px;">🔐 Change Password</h3>
+          <form onsubmit="changePassword(event)">
+            <div class="form-group">
+              <label>Current Password</label>
+              <input id="currentPassword" type="password" required>
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <input id="newPassword" type="password" minlength="6" required>
+            </div>
+            <div class="form-group">
+              <label>Confirm New Password</label>
+              <input id="confirmNewPassword" type="password" minlength="6" required>
+            </div>
+            <button type="submit" class="btn-primary">Change Password</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    
+    if (!token || role !== "user") {
+      alert("Access Denied! Customer only.");
+      window.location.href = "login.html";
+    }
+
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+    function showSection(section) {
+      document.getElementById("shopSection").style.display = "none";
+      document.getElementById("cartSection").style.display = "none";
+      document.getElementById("ordersSection").style.display = "none";
+      document.getElementById("wishlistSection").style.display = "none";
+      document.getElementById("profileSection").style.display = "none";
+      
+      document.getElementById(section + "Section").style.display = "block";
+      
+      if (section === "shop") loadProducts();
+      if (section === "cart") loadCart();
+      if (section === "orders") loadOrders();
+      if (section === "wishlist") loadWishlist();
+      if (section === "profile") loadProfile();
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById("cartBadge");
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = "flex";
+      } else {
+        badge.style.display = "none";
+      }
+    }
+
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        window.location.href = "login.html";
+      }
+    }
+
+    async function loadProducts() {
+      const catalog = document.getElementById("productCatalog");
+      catalog.innerHTML = '<div class="loading-state"><div class="spinner-large"></div><p>Loading products...</p></div>';
+      
+      try {
+        const res = await fetch(`${API_BASE}/products`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        if (!res.ok) throw new Error("Failed to load products");
+        const products = await res.json();
+
+        if (products.length === 0) {
+          catalog.innerHTML = '<div class="empty-state"><p>No products available.</p></div>';
+          return;
+        }
+
+        catalog.innerHTML = '';
+        products.forEach(product => {
+          const isWishlisted = wishlist.some(item => item.id === product._id);
+          const isOutOfStock = product.quantity === 0;
+          
+          const card = document.createElement("div");
+          card.className = "catalog-card";
+          card.innerHTML = `
+            <span class="wishlist-heart ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist('${product._id}', '${product.name}', ${product.price}, '${product.image || ''}')">
+              ${isWishlisted ? '❤️' : '🤍'}
+            </span>
+            ${product.image 
+              ? `<img src="${product.image}" class="catalog-image" alt="${product.name}">`
+              : `<div class="catalog-image">📦</div>`
+            }
+            <div class="catalog-name">${product.name}</div>
+            <div class="catalog-price">₹${product.price.toLocaleString()}</div>
+            <span class="stock-badge ${isOutOfStock ? 'stock-out' : 'stock-in'}">
+              ${isOutOfStock ? 'Out of Stock' : `${product.quantity} in stock`}
+            </span>
+            <button class="btn-add-cart" onclick="addToCart('${product._id}', '${product.name}', ${product.price}, '${product.image || ''}')" ${isOutOfStock ? 'disabled' : ''}>
+              ${isOutOfStock ? '❌ Sold Out' : '🛒 Add to Cart'}
+            </button>
+          `;
+          catalog.appendChild(card);
+        });
+      } catch (error) {
+        catalog.innerHTML = `<div class="empty-state"><p>❌ ${error.message}</p></div>`;
+      }
+    }
+
+    function addToCart(id, name, price, image) {
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ id, name, price, image, quantity: 1 });
+      }
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartBadge();
+      alert(`✅ ${name} added to cart!`);
+    }
+
+    function toggleWishlist(id, name, price, image) {
+      const index = wishlist.findIndex(item => item.id === id);
+      if (index > -1) {
+        wishlist.splice(index, 1);
+        alert(`💔 Removed from wishlist`);
+      } else {
+        wishlist.push({ id, name, price, image });
+        alert(`❤️ Added to wishlist!`);
+      }
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      loadProducts();
+    }
+
+    function loadCart() {
+      const container = document.getElementById("cartItems");
+      
+      if (cart.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>Your cart is empty</p></div>';
+        document.getElementById("checkoutBtn").disabled = true;
+        return;
+      }
+
+      document.getElementById("checkoutBtn").disabled = false;
+      container.innerHTML = '';
+      
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price * item.quantity;
+        
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.marginBottom = "16px";
+        card.innerHTML = `
+          <div style="display: flex; gap: 16px; align-items: center;">
+            ${item.image 
+              ? `<img src="${item.image}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;" alt="${item.name}">`
+              : `<div style="width: 80px; height: 80px; background: var(--primary-gradient); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 32px;">📦</div>`
+            }
+            <div style="flex: 1;">
+              <h3>${item.name}</h3>
+              <p>₹${item.price.toLocaleString()} × ${item.quantity}</p>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <button class="btn-edit" onclick="updateCartQuantity(${index}, -1)">−</button>
+              <span style="font-weight: 600; min-width: 30px; text-align: center;">${item.quantity}</span>
+              <button class="btn-edit" onclick="updateCartQuantity(${index}, 1)">+</button>
+              <button class="btn-delete" onclick="removeFromCart(${index})">🗑️</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      document.getElementById("totalAmount").textContent = "₹" + total.toLocaleString();
+    }
+
+    function updateCartQuantity(index, change) {
+      cart[index].quantity += change;
+      if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+      }
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartBadge();
+      loadCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartBadge();
+      loadCart();
+    }
+
+    function checkout() {
+      if (cart.length === 0) return;
+      
+      const order = {
+        id: "ORD" + Date.now(),
+        date: new Date().toISOString(),
+        items: [...cart],
+        total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+        status: "processing"
+      };
+      
+      orders.push(order);
+      localStorage.setItem("orders", JSON.stringify(orders));
+      
+      cart = [];
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartBadge();
+      
+      alert("✅ Order placed successfully!");
+      showSection("orders");
+    }
+
+    function loadOrders() {
+      const container = document.getElementById("ordersList");
+      
+      if (orders.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No orders yet</p></div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      orders.reverse().forEach(order => {
+        const card = document.createElement("div");
+        card.className = "order-card";
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+            <div>
+              <h3>Order #${order.id}</h3>
+              <p style="font-size: 14px; color: var(--text-secondary);">${new Date(order.date).toLocaleDateString()}</p>
+            </div>
+            <span class="order-status status-${order.status}">${order.status.toUpperCase()}</span>
+          </div>
+          <div style="border-top: 1px solid var(--card-border); padding-top: 12px;">
+            ${order.items.map(item => `<p>• ${item.name} × ${item.quantity}</p>`).join('')}
+          </div>
+          <div style="margin-top: 12px; font-weight: 700; font-size: 18px;">
+            Total: ₹${order.total.toLocaleString()}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function loadWishlist() {
+      const container = document.getElementById("wishlistItems");
+      
+      if (wishlist.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>Your wishlist is empty</p></div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      wishlist.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "catalog-card";
+        card.innerHTML = `
+          ${item.image 
+            ? `<img src="${item.image}" class="catalog-image" alt="${item.name}">`
+            : `<div class="catalog-image">📦</div>`
+          }
+          <div class="catalog-name">${item.name}</div>
+          <div class="catalog-price">₹${item.price.toLocaleString()}</div>
+          <button class="btn-add-cart" onclick="addToCart('${item.id}', '${item.name}', ${item.price}, '${item.image || ''}')">
+            🛒 Add to Cart
+          </button>
+          <button class="btn-delete" onclick="removeFromWishlist('${item.id}')" style="margin-top: 8px;">
+            💔 Remove
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function removeFromWishlist(id) {
+      wishlist = wishlist.filter(item => item.id !== id);
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      loadWishlist();
+    }
+
+    function loadProfile() {
+      const userName = localStorage.getItem("userName") || "User";
+      document.getElementById("profileName").textContent = userName;
+      document.getElementById("editName").value = userName;
+      document.getElementById("editEmail").value = localStorage.getItem("userEmail") || "user@example.com";
+    }
+
+    function updateProfile(event) {
+      event.preventDefault();
+      const newName = document.getElementById("editName").value;
+      localStorage.setItem("userName", newName);
+      alert("✅ Profile updated!");
+      loadProfile();
+    }
+
+    function changePassword(event) {
+      event.preventDefault();
+      const current = document.getElementById("currentPassword").value;
+      const newPass = document.getElementById("newPassword").value;
+      const confirm = document.getElementById("confirmNewPassword").value;
+
+      if (newPass !== confirm) {
+        alert("❌ Passwords don't match!");
+        return;
+      }
+
+      alert("✅ Password changed successfully! (Feature coming soon)");
+      document.getElementById("currentPassword").value = "";
+      document.getElementById("newPassword").value = "";
+      document.getElementById("confirmNewPassword").value = "";
+    }
+
+    updateCartBadge();
+    loadProducts();
+  </script>
+</body>
+</html>

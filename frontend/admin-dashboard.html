@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Shop Management</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-badge {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 12px;
+    }
+
+    .admin-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .admin-action-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .admin-action-card:hover {
+      background: var(--card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-action-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    .admin-action-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .admin-action-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="logo">🛒 Shop <span class="admin-badge">ADMIN</span></h2>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="admin-dashboard.html" class="nav-item active">
+          <span class="icon">👑</span>
+          <span>Admin Dashboard</span>
+        </a>
+        <a href="products.html" class="nav-item">
+          <span class="icon">📦</span>
+          <span>Products</span>
+        </a>
+        <a href="sales.html" class="nav-item">
+          <span class="icon">📊</span>
+          <span>Sales</span>
+        </a>
+        <a href="users-management.html" class="nav-item">
+          <span class="icon">👥</span>
+          <span>Users</span>
+        </a>
+        <a href="reports.html" class="nav-item">
+          <span class="icon">📈</span>
+          <span>Reports</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span class="icon">⚙️</span>
+          <span>Settings</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span class="icon">🌙</span>
+          <span>Toggle Theme</span>
+        </button>
+        <button class="logout-btn" onclick="logout()">
+          <span class="icon">🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <header class="page-header">
+        <div>
+          <h1>👑 Admin Dashboard</h1>
+          <p class="subtitle">Welcome back, <span id="userName">Admin</span>! You have full system access.</p>
+        </div>
+      </header>
+
+      <!-- Quick Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-content">
+            <h4>Total Products</h4>
+            <p class="stat-value" id="productCount">-</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-content">
+            <h4>Total Revenue</h4>
+            <p class="stat-value" id="revenueCount">-</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📈</div>
+          <div class="stat-content">
+            <h4>Total Sales</h4>
+            <p class="stat-value" id="salesCount">-</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-content">
+            <h4>Total Users</h4>
+            <p class="stat-value" id="userCount">-</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Actions -->
+      <div class="card" style="margin-top: 24px;">
+        <h3>🎯 Admin Actions</h3>
+        <div class="admin-actions">
+          <div class="admin-action-card" onclick="navigate('products.html')">
+            <div class="admin-action-icon">📦</div>
+            <div class="admin-action-title">Manage Products</div>
+            <div class="admin-action-desc">Add, edit, delete products</div>
+          </div>
+
+          <div class="admin-action-card" onclick="navigate('users-management.html')">
+            <div class="admin-action-icon">👥</div>
+            <div class="admin-action-title">User Management</div>
+            <div class="admin-action-desc">Manage user accounts & roles</div>
+          </div>
+
+          <div class="admin-action-card" onclick="navigate('sales.html')">
+            <div class="admin-action-icon">💰</div>
+            <div class="admin-action-title">View Sales</div>
+            <div class="admin-action-desc">Track all transactions</div>
+          </div>
+
+          <div class="admin-action-card" onclick="navigate('reports.html')">
+            <div class="admin-action-icon">📊</div>
+            <div class="admin-action-title">Generate Reports</div>
+            <div class="admin-action-desc">Export data & analytics</div>
+          </div>
+
+          <div class="admin-action-card" onclick="navigate('settings.html')">
+            <div class="admin-action-icon">⚙️</div>
+            <div class="admin-action-title">System Settings</div>
+            <div class="admin-action-desc">Configure application</div>
+          </div>
+
+          <div class="admin-action-card" onclick="alert('Backup feature in Settings page!')">
+            <div class="admin-action-icon">💾</div>
+            <div class="admin-action-title">Backup Data</div>
+            <div class="admin-action-desc">Export database backup</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card" style="margin-top: 24px;">
+        <h3>📋 Recent Activity</h3>
+        <div id="recentActivity" style="padding: 20px; text-align: center; color: var(--text-secondary);">
+          Loading recent activity...
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    
+    if (!token || role !== "admin") {
+      alert("Access Denied! Admin only.");
+      window.location.href = "login.html";
+    }
+
+    document.getElementById("userName").textContent = localStorage.getItem("userName") || "Admin";
+
+    function navigate(page) {
+      window.location.href = page;
+    }
+
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        window.location.href = "login.html";
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const productsRes = await fetch(`${API_BASE}/products`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+        if (productsRes.ok) {
+          const products = await productsRes.json();
+          document.getElementById("productCount").textContent = products.length;
+        }
+
+        const salesRes = await fetch(`${API_BASE}/sales/report`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+        if (salesRes.ok) {
+          const sales = await salesRes.json();
+          document.getElementById("revenueCount").textContent = "₹" + sales.totalRevenue.toLocaleString();
+          document.getElementById("salesCount").textContent = sales.totalSales;
+        }
+
+        document.getElementById("userCount").textContent = "4"; // Placeholder
+        document.getElementById("recentActivity").textContent = "No recent activity to display.";
+      } catch (error) {
+        console.error("Error loading stats:", error);
+      }
+    }
+
+    loadStats();
+  </script>
+</body>
+</html>

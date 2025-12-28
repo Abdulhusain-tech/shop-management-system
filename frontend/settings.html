@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Shop Management</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .settings-grid {
+      display: grid;
+      gap: 24px;
+    }
+
+    .setting-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .setting-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .setting-icon {
+      font-size: 32px;
+    }
+
+    .setting-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .setting-desc {
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .backup-info {
+      background: var(--bg-tertiary);
+      padding: 16px;
+      border-radius: 12px;
+      margin: 16px 0;
+    }
+
+    .backup-info p {
+      margin: 8px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="logo">🛒 Shop</h2>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="admin-dashboard.html" class="nav-item">
+          <span class="icon">👑</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="products.html" class="nav-item">
+          <span class="icon">📦</span>
+          <span>Products</span>
+        </a>
+        <a href="users-management.html" class="nav-item">
+          <span class="icon">👥</span>
+          <span>Users</span>
+        </a>
+        <a href="settings.html" class="nav-item active">
+          <span class="icon">⚙️</span>
+          <span>Settings</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span class="icon">🌙</span>
+          <span>Toggle Theme</span>
+        </button>
+        <button class="logout-btn" onclick="logout()">
+          <span class="icon">🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="page-header">
+        <div>
+          <h1>⚙️ System Settings</h1>
+          <p class="subtitle">Manage system configuration</p>
+        </div>
+      </header>
+
+      <div class="settings-grid">
+        <!-- Backup & Restore -->
+        <div class="setting-card">
+          <div class="setting-header">
+            <div class="setting-icon">💾</div>
+            <div>
+              <div class="setting-title">Backup & Restore</div>
+              <div class="setting-desc">Export and backup your database</div>
+            </div>
+          </div>
+
+          <div class="backup-info">
+            <h4 style="margin-bottom: 8px;">ℹ️ Backup Information</h4>
+            <p>• Includes all users, products, and sales data</p>
+            <p>• Downloads as JSON file</p>
+            <p>• Can be used to restore data later</p>
+            <p>• Last backup: <span id="lastBackup">Never</span></p>
+          </div>
+
+          <button class="btn-primary" onclick="createBackup()" id="backupBtn">
+            <span>💾 Create Backup</span>
+            <div class="spinner" style="display: none;"></div>
+          </button>
+
+          <div style="margin-top: 16px;">
+            <label class="btn-secondary" style="display: inline-block; cursor: pointer;">
+              📂 Restore from Backup
+              <input type="file" id="restoreFile" accept=".json" style="display: none;" onchange="restoreBackup(event)">
+            </label>
+          </div>
+        </div>
+
+        <!-- Email Configuration -->
+        <div class="setting-card">
+          <div class="setting-header">
+            <div class="setting-icon">📧</div>
+            <div>
+              <div class="setting-title">Email Configuration</div>
+              <div class="setting-desc">Configure email settings for notifications</div>
+            </div>
+          </div>
+
+          <form onsubmit="saveEmailSettings(event)">
+            <div class="form-group">
+              <label>SMTP Host</label>
+              <input id="smtpHost" type="text" placeholder="smtp.gmail.com" value="smtp.gmail.com">
+            </div>
+            <div class="form-group">
+              <label>SMTP Port</label>
+              <input id="smtpPort" type="number" placeholder="587" value="587">
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input id="emailAddress" type="email" placeholder="your-email@gmail.com">
+            </div>
+            <div class="form-group">
+              <label>Email Password</label>
+              <input id="emailPassword" type="password" placeholder="App password">
+            </div>
+            <div class="form-group">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="emailEnabled">
+                <span>Enable email notifications</span>
+              </label>
+            </div>
+            <button type="submit" class="btn-primary">Save Email Settings</button>
+          </form>
+        </div>
+
+        <!-- System Information -->
+        <div class="setting-card">
+          <div class="setting-header">
+            <div class="setting-icon">ℹ️</div>
+            <div>
+              <div class="setting-title">System Information</div>
+              <div class="setting-desc">View system details</div>
+            </div>
+          </div>
+
+          <div class="backup-info">
+            <p><strong>Version:</strong> 1.0.0</p>
+            <p><strong>Database:</strong> MongoDB</p>
+            <p><strong>Server:</strong> Node.js + Express</p>
+            <p><strong>Total Users:</strong> <span id="totalUsers">-</span></p>
+            <p><strong>Total Products:</strong> <span id="totalProducts">-</span></p>
+            <p><strong>Total Sales:</strong> <span id="totalSales">-</span></p>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="setting-card" style="border-color: var(--danger);">
+          <div class="setting-header">
+            <div class="setting-icon">⚠️</div>
+            <div>
+              <div class="setting-title" style="color: var(--danger);">Danger Zone</div>
+              <div class="setting-desc">Irreversible actions</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="clearAllData()" style="background: var(--danger);">
+            🗑️ Clear All Data
+          </button>
+          <p style="margin-top: 8px; font-size: 12px; color: var(--text-muted);">
+            ⚠️ This will permanently delete all data. Create a backup first!
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token || role !== "admin") {
+      alert("Access Denied! Admin only.");
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        window.location.href = "login.html";
+      }
+    }
+
+    async function createBackup() {
+      const btn = document.getElementById("backupBtn");
+      const btnText = btn.querySelector("span");
+      const spinner = btn.querySelector(".spinner");
+      
+      btnText.style.display = "none";
+      spinner.style.display = "block";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/backup`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        if (!res.ok) throw new Error("Backup failed");
+
+        const backup = await res.json();
+        
+        // Download as JSON file
+        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `backup-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        localStorage.setItem("lastBackup", new Date().toISOString());
+        updateLastBackup();
+        
+        alert("✅ Backup created and downloaded successfully!");
+
+      } catch (error) {
+        alert("❌ " + error.message);
+      } finally {
+        btnText.style.display = "block";
+        spinner.style.display = "none";
+        btn.disabled = false;
+      }
+    }
+
+    function restoreBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!confirm("⚠️ This will restore data from backup. Current data may be affected. Continue?")) {
+        event.target.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const backup = JSON.parse(e.target.result);
+          console.log("Backup loaded:", backup);
+          alert("✅ Backup loaded! Restore feature coming soon...");
+        } catch (error) {
+          alert("❌ Invalid backup file!");
+        }
+        event.target.value = "";
+      };
+      reader.readAsText(file);
+    }
+
+    function saveEmailSettings(event) {
+      event.preventDefault();
+      
+      const settings = {
+        host: document.getElementById("smtpHost").value,
+        port: document.getElementById("smtpPort").value,
+        email: document.getElementById("emailAddress").value,
+        password: document.getElementById("emailPassword").value,
+        enabled: document.getElementById("emailEnabled").checked
+      };
+
+      localStorage.setItem("emailSettings", JSON.stringify(settings));
+      alert("✅ Email settings saved!");
+    }
+
+    function clearAllData() {
+      const confirmation = prompt('⚠️ Type "DELETE ALL DATA" to confirm:');
+      if (confirmation === "DELETE ALL DATA") {
+        alert("🚧 Clear data feature coming soon...");
+      }
+    }
+
+    function updateLastBackup() {
+      const lastBackup = localStorage.getItem("lastBackup");
+      if (lastBackup) {
+        const date = new Date(lastBackup);
+        document.getElementById("lastBackup").textContent = date.toLocaleString();
+      }
+    }
+
+    async function loadSystemInfo() {
+      try {
+        const [usersRes, productsRes, salesRes] = await Promise.all([
+          fetch(`${API_BASE}/admin/users`, { headers: { Authorization: "Bearer " + token } }),
+          fetch(`${API_BASE}/products`, { headers: { Authorization: "Bearer " + token } }),
+          fetch(`${API_BASE}/sales/report`, { headers: { Authorization: "Bearer " + token } })
+        ]);
+
+        if (usersRes.ok) {
+          const users = await usersRes.json();
+          document.getElementById("totalUsers").textContent = users.length;
+        }
+
+        if (productsRes.ok) {
+          const products = await productsRes.json();
+          document.getElementById("totalProducts").textContent = products.length;
+        }
+
+        if (salesRes.ok) {
+          const sales = await salesRes.json();
+          document.getElementById("totalSales").textContent = sales.totalSales;
+        }
+      } catch (error) {
+        console.error("Error loading system info:", error);
+      }
+    }
+
+    // Load saved email settings
+    const savedSettings = JSON.parse(localStorage.getItem("emailSettings") || "{}");
+    if (savedSettings.host) document.getElementById("smtpHost").value = savedSettings.host;
+    if (savedSettings.port) document.getElementById("smtpPort").value = savedSettings.port;
+    if (savedSettings.email) document.getElementById("emailAddress").value = savedSettings.email;
+    if (savedSettings.enabled) document.getElementById("emailEnabled").checked = savedSettings.enabled;
+
+    updateLastBackup();
+    loadSystemInfo();
+  </script>
+</body>
+</html>

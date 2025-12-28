@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Shop Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="logo">🛒 Shop</h2>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item active">
+          <span class="icon">🏠</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="products.html" class="nav-item">
+          <span class="icon">📦</span>
+          <span>Products</span>
+        </a>
+        <a href="sales.html" class="nav-item">
+          <span class="icon">📊</span>
+          <span>Sales</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span class="icon">🌙</span>
+          <span>Toggle Theme</span>
+        </button>
+        <button class="logout-btn" onclick="logout()">
+          <span class="icon">🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="page-header">
+        <div>
+          <h1>Welcome 👋</h1>
+          <p class="subtitle">Hello, <span id="userName">User</span>!</p>
+        </div>
+      </header>
+
+      <div class="card" style="text-align: center; padding: 48px;">
+        <h2 style="margin-bottom: 16px;">🎉 Welcome to Shop Management System</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 24px;">
+          You're using the general dashboard. For the full experience, login with a specific role:
+        </p>
+        <div style="display: grid; gap: 12px; max-width: 400px; margin: 0 auto;">
+          <div style="padding: 12px; background: var(--card-bg); border-radius: 12px;">
+            👑 <strong>Admin</strong> - Full system control
+          </div>
+          <div style="padding: 12px; background: var(--card-bg); border-radius: 12px;">
+            🏪 <strong>Owner</strong> - Business management
+          </div>
+          <div style="padding: 12px; background: var(--card-bg); border-radius: 12px;">
+            👔 <strong>Employee</strong> - Staff operations
+          </div>
+          <div style="padding: 12px; background: var(--card-bg); border-radius: 12px;">
+            🛍️ <strong>User</strong> - Shopping experience
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid" style="margin-top: 24px;">
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-content">
+            <h4>Products</h4>
+            <p class="stat-value" id="productCount">-</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-content">
+            <h4>Revenue</h4>
+            <p class="stat-value" id="revenueCount">-</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📈</div>
+          <div class="stat-content">
+            <h4>Sales</h4>
+            <p class="stat-value" id="salesCount">-</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-actions" style="margin-top: 24px;">
+        <div class="action-card" onclick="navigate('products.html')">
+          <div class="action-icon">📦</div>
+          <h3>Products</h3>
+          <p>View inventory</p>
+          <div class="action-arrow">→</div>
+        </div>
+
+        <div class="action-card" onclick="navigate('sales.html')">
+          <div class="action-icon">📊</div>
+          <h3>Sales</h3>
+          <p>View analytics</p>
+          <div class="action-arrow">→</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    
+    if (!token) {
+      window.location.href = "login.html";
+    }
+
+    // Redirect to role-specific dashboard if available
+    if (role) {
+      const dashboards = {
+        admin: "admin-dashboard.html",
+        owner: "owner-dashboard.html",
+        employee: "employee-dashboard.html",
+        user: "user-dashboard.html"
+      };
+      
+      if (dashboards[role]) {
+        window.location.href = dashboards[role];
+      }
+    }
+
+    document.getElementById("userName").textContent = localStorage.getItem("userName") || role || "User";
+
+    function navigate(page) {
+      window.location.href = page;
+    }
+
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        window.location.href = "login.html";
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const productsRes = await fetch(`${API_BASE}/products`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+        if (productsRes.ok) {
+          const products = await productsRes.json();
+          document.getElementById("productCount").textContent = products.length;
+        }
+
+        const salesRes = await fetch(`${API_BASE}/sales/report`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+        if (salesRes.ok) {
+          const sales = await salesRes.json();
+          document.getElementById("revenueCount").textContent = "₹" + sales.totalRevenue.toLocaleString();
+          document.getElementById("salesCount").textContent = sales.totalSales;
+        }
+      } catch (error) {
+        console.error("Error loading stats:", error);
+      }
+    }
+
+    loadStats();
+  </script>
+</body>
+</html>

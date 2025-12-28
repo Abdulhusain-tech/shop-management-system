@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales - Shop Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="logo">🛒 Shop</h2>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item">
+          <span class="icon">🏠</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="products.html" class="nav-item">
+          <span class="icon">📦</span>
+          <span>Products</span>
+        </a>
+        <a href="sales.html" class="nav-item active">
+          <span class="icon">📊</span>
+          <span>Sales</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span class="icon">🌙</span>
+          <span>Toggle Theme</span>
+        </button>
+        <button class="logout-btn" onclick="logout()">
+          <span class="icon">🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="page-header">
+        <div>
+          <h1>📊 Sales Analytics</h1>
+          <p class="subtitle">Track your revenue and performance</p>
+        </div>
+        <button class="btn-primary" onclick="loadReport()">
+          <span>🔄 Refresh</span>
+        </button>
+      </header>
+
+      <div class="sales-stats">
+        <div class="stat-card large">
+          <div class="stat-icon">💰</div>
+          <div class="stat-content">
+            <h4>Total Revenue</h4>
+            <p class="stat-value large" id="totalRevenue">₹0</p>
+          </div>
+        </div>
+
+        <div class="stat-card large">
+          <div class="stat-icon">📈</div>
+          <div class="stat-content">
+            <h4>Total Sales</h4>
+            <p class="stat-value large" id="totalSales">0</p>
+          </div>
+        </div>
+
+        <div class="stat-card large">
+          <div class="stat-icon">📊</div>
+          <div class="stat-content">
+            <h4>Average Sale</h4>
+            <p class="stat-value large" id="avgSale">₹0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>📈 Sales Trend</h3>
+        <div class="chart-placeholder">
+          <div class="mini-chart">
+            <div class="bar" style="height: 60%"></div>
+            <div class="bar" style="height: 80%"></div>
+            <div class="bar" style="height: 45%"></div>
+            <div class="bar" style="height: 95%"></div>
+            <div class="bar" style="height: 70%"></div>
+            <div class="bar" style="height: 85%"></div>
+            <div class="bar" style="height: 90%"></div>
+          </div>
+          <p style="margin-top: 24px; color: var(--text-secondary);">Advanced charts coming soon...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    const API = `${API_BASE}/sales/report`;
+    const token = localStorage.getItem("token");
+
+    if (!token) window.location.href = "login.html";
+
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        window.location.href = "login.html";
+      }
+    }
+
+    async function loadReport() {
+      try {
+        const res = await fetch(API, {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        if (!res.ok) throw new Error("Failed to load report");
+
+        const data = await res.json();
+        
+        document.getElementById("totalRevenue").textContent = "₹" + data.totalRevenue.toLocaleString();
+        document.getElementById("totalSales").textContent = data.totalSales;
+        
+        const avgSale = data.totalSales > 0 ? data.totalRevenue / data.totalSales : 0;
+        document.getElementById("avgSale").textContent = "₹" + avgSale.toFixed(2);
+
+      } catch (error) {
+        console.error("Error loading report:", error);
+        alert(error.message);
+      }
+    }
+
+    loadReport();
+  </script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports - Shop Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="logo">🛒 Shop</h2>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <a href="admin-dashboard.html" class="nav-item">
+          <span class="icon">👑</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="products.html" class="nav-item">
+          <span class="icon">📦</span>
+          <span>Products</span>
+        </a>
+        <a href="reports.html" class="nav-item active">
+          <span class="icon">📈</span>
+          <span>Reports</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span class="icon">🌙</span>
+          <span>Toggle Theme</span>
+        </button>
+        <button class="logout-btn" onclick="logout()">
+          <span class="icon">🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="page-header">
+        <div>
+          <h1>📈 Reports & Analytics</h1>
+          <p class="subtitle">Generate and export reports</p>
+        </div>
+      </header>
+
+      <div class="card" style="margin-bottom: 24px;">
+        <h3>📊 Quick Reports</h3>
+        <div class="quick-actions" style="margin-top: 20px;">
+          <div class="action-card" onclick="generateProductReport()">
+            <div class="action-icon">📦</div>
+            <h3>Product Report</h3>
+            <p>Export inventory data</p>
+          </div>
+
+          <div class="action-card" onclick="generateSalesReport()">
+            <div class="action-icon">💰</div>
+            <h3>Sales Report</h3>
+            <p>Export sales data</p>
+          </div>
+
+          <div class="action-card" onclick="generateUserReport()">
+            <div class="action-icon">👥</div>
+            <h3>User Report</h3>
+            <p>Export user data</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>📋 Report Preview</h3>
+        <div id="reportPreview" style="padding: 20px; text-align: center; color: var(--text-secondary);">
+          Select a report type to generate
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    const token = localStorage.getItem("token");
+
+    if (!token) window.location.href = "login.html";
+
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.clear();
+        window.location.href = "login.html";
+      }
+    }
+
+    async function generateProductReport() {
+      const preview = document.getElementById("reportPreview");
+      preview.innerHTML = '<div class="loading-state"><div class="spinner-large"></div><p>Generating report...</p></div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/products`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch products");
+        const products = await res.json();
+
+        // Generate CSV
+        const csv = generateCSV(products, ["name", "price", "quantity"]);
+        downloadCSV(csv, "products-report.csv");
+
+        preview.innerHTML = `
+          <h4 style="color: var(--primary); margin-bottom: 16px;">✅ Product Report Generated</h4>
+          <p>Total Products: ${products.length}</p>
+          <p>Report downloaded as CSV</p>
+        `;
+      } catch (error) {
+        preview.innerHTML = `<p style="color: var(--danger);">❌ ${error.message}</p>`;
+      }
+    }
+
+    async function generateSalesReport() {
+      const preview = document.getElementById("reportPreview");
+      preview.innerHTML = '<div class="loading-state"><div class="spinner-large"></div><p>Generating report...</p></div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/sales/report`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch sales");
+        const sales = await res.json();
+
+        const reportData = {
+          "Total Sales": sales.totalSales,
+          "Total Revenue": "₹" + sales.totalRevenue.toLocaleString(),
+          "Generated": new Date().toLocaleString()
+        };
+
+        const csv = Object.entries(reportData).map(([key, value]) => `${key},${value}`).join("\n");
+        downloadCSV(csv, "sales-report.csv");
+
+        preview.innerHTML = `
+          <h4 style="color: var(--primary); margin-bottom: 16px;">✅ Sales Report Generated</h4>
+          <p>Total Sales: ${sales.totalSales}</p>
+          <p>Total Revenue: ₹${sales.totalRevenue.toLocaleString()}</p>
+          <p>Report downloaded as CSV</p>
+        `;
+      } catch (error) {
+        preview.innerHTML = `<p style="color: var(--danger);">❌ ${error.message}</p>`;
+      }
+    }
+
+    async function generateUserReport() {
+      const preview = document.getElementById("reportPreview");
+      preview.innerHTML = '<div class="loading-state"><div class="spinner-large"></div><p>Generating report...</p></div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/users`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch users");
+        const users = await res.json();
+
+        const csv = generateCSV(users, ["name", "email", "role", "createdAt"]);
+        downloadCSV(csv, "users-report.csv");
+
+        preview.innerHTML = `
+          <h4 style="color: var(--primary); margin-bottom: 16px;">✅ User Report Generated</h4>
+          <p>Total Users: ${users.length}</p>
+          <p>Report downloaded as CSV</p>
+        `;
+      } catch (error) {
+        preview.innerHTML = `<p style="color: var(--danger);">❌ ${error.message}</p>`;
+      }
+    }
+
+    function generateCSV(data, fields) {
+      if (!data.length) return "";
+      
+      const headers = fields.join(",");
+      const rows = data.map(item => 
+        fields.map(field => {
+          const value = item[field];
+          return typeof value === 'string' && value.includes(',') ? `"${value}"` : value;
+        }).join(",")
+      );
+      
+      return headers + "\n" + rows.join("\n");
+    }
+
+    function downloadCSV(csv, filename) {
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
