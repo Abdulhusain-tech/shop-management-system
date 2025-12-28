@@ -1,165 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee Dashboard - Shop Management</title>
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    .employee-badge {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      color: white;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-left: 12px;
-    }
-  </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Employee Dashboard - Shop Management</title>
+	<link rel="stylesheet" href="css/style.css">
+	<style>
+		.employee-badge {
+			background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+			color: white;
+			padding: 4px 12px;
+			border-radius: 12px;
+			font-size: 12px;
+			font-weight: 600;
+			margin-left: 12px;
+		}
+	</style>
 </head>
+
 <body>
-  <div class="dashboard-layout">
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h2 class="logo">🛒 Shop <span class="employee-badge">STAFF</span></h2>
-      </div>
-      
-      <nav class="sidebar-nav">
-        <a href="employee-dashboard.html" class="nav-item active">
-          <span class="icon">🏠</span>
-          <span>Dashboard</span>
-        </a>
-        <a href="products.html" class="nav-item">
-          <span class="icon">📦</span>
-          <span>View Products</span>
-        </a>
-        <a href="sales.html" class="nav-item">
-          <span class="icon">📊</span>
-          <span>Sales Data</span>
-        </a>
-      </nav>
-      
-      <div class="sidebar-footer">
-        <button class="theme-toggle" onclick="toggleTheme()">
-          <span class="icon">🌙</span>
-          <span>Toggle Theme</span>
-        </button>
-        <button class="logout-btn" onclick="logout()">
-          <span class="icon">🚪</span>
-          <span>Logout</span>
-        </button>
-      </div>
-    </aside>
+	<div class="dashboard-layout">
+		<aside class="sidebar">
+			<div class="sidebar-header">
+				<h2 class="logo">🛒 Shop <span class="employee-badge">STAFF</span></h2>
+			</div>
 
-    <main class="main-content">
-      <header class="page-header">
-        <div>
-          <h1>👔 Employee Dashboard</h1>
-          <p class="subtitle">Hello, <span id="userName">Employee</span>! Ready for today's work.</p>
-        </div>
-      </header>
+			<nav class="sidebar-nav">
+				<a href="employee-dashboard.html" class="nav-item active">
+					<span class="icon">🏠</span>
+					<span>Dashboard</span>
+				</a>
+				<a href="products.html" class="nav-item">
+					<span class="icon">📦</span>
+					<span>View Products</span>
+				</a>
+				<a href="sales.html" class="nav-item">
+					<span class="icon">📊</span>
+					<span>Sales Data</span>
+				</a>
+			</nav>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">📦</div>
-          <div class="stat-content">
-            <h4>Available Products</h4>
-            <p class="stat-value" id="productCount">-</p>
-          </div>
-        </div>
+			<div class="sidebar-footer">
+				<button class="theme-toggle" onclick="toggleTheme()">
+					<span class="icon">🌙</span>
+					<span>Toggle Theme</span>
+				</button>
+				<button class="logout-btn" onclick="logout()">
+					<span class="icon">🚪</span>
+					<span>Logout</span>
+				</button>
+			</div>
+		</aside>
 
-        <div class="stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-content">
-            <h4>Total Sales</h4>
-            <p class="stat-value" id="salesCount">-</p>
-          </div>
-        </div>
+		<main class="main-content">
+			<header class="page-header">
+				<div>
+					<h1>👔 Employee Dashboard</h1>
+					<p class="subtitle">Hello, <span id="userName">Employee</span>! Ready for today's work.</p>
+				</div>
+			</header>
 
-        <div class="stat-card">
-          <div class="stat-icon">⏰</div>
-          <div class="stat-content">
-            <h4>Shift Time</h4>
-            <p class="stat-value" id="shiftTime">9 AM - 5 PM</p>
-          </div>
-        </div>
-      </div>
+			<div class="stats-grid">
+				<div class="stat-card">
+					<div class="stat-icon">📦</div>
+					<div class="stat-content">
+						<h4>Available Products</h4>
+						<p class="stat-value" id="productCount">-</p>
+					</div>
+				</div>
 
-      <div class="card" style="margin-top: 24px;">
-        <h3>📋 Quick Actions</h3>
-        <div class="quick-actions">
-          <div class="action-card" onclick="navigate('products.html')">
-            <div class="action-icon">📦</div>
-            <h3>View Inventory</h3>
-            <p>Check product availability</p>
-            <div class="action-arrow">→</div>
-          </div>
+				<div class="stat-card">
+					<div class="stat-icon">📊</div>
+					<div class="stat-content">
+						<h4>Total Sales</h4>
+						<p class="stat-value" id="salesCount">-</p>
+					</div>
+				</div>
 
-          <div class="action-card" onclick="navigate('sales.html')">
-            <div class="action-icon">📊</div>
-            <h3>Sales Report</h3>
-            <p>View sales analytics</p>
-            <div class="action-arrow">→</div>
-          </div>
-        </div>
-      </div>
+				<div class="stat-card">
+					<div class="stat-icon">⏰</div>
+					<div class="stat-content">
+						<h4>Shift Time</h4>
+						<p class="stat-value" id="shiftTime">9 AM - 5 PM</p>
+					</div>
+				</div>
+			</div>
 
-      <div class="card" style="margin-top: 24px;">
-        <h3>ℹ️ Information</h3>
-        <p style="color: var(--text-secondary); padding: 12px 0;">
-          As an employee, you can view products and sales data. Contact your manager for additional permissions.
-        </p>
-      </div>
-    </main>
-  </div>
+			<div class="card" style="margin-top: 24px;">
+				<h3>📋 Quick Actions</h3>
+				<div class="quick-actions">
+					<div class="action-card" onclick="navigate('products.html')">
+						<div class="action-icon">📦</div>
+						<h3>View Inventory</h3>
+						<p>Check product availability</p>
+						<div class="action-arrow">→</div>
+					</div>
 
-  <script src="js/api.js"></script>
-  <script src="js/theme.js"></script>
-  <script>
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    
-    if (!token || role !== "employee") {
-      alert("Access Denied! Employee only.");
-      window.location.href = "login.html";
-    }
+					<div class="action-card" onclick="navigate('sales.html')">
+						<div class="action-icon">📊</div>
+						<h3>Sales Report</h3>
+						<p>View sales analytics</p>
+						<div class="action-arrow">→</div>
+					</div>
+				</div>
+			</div>
 
-    document.getElementById("userName").textContent = localStorage.getItem("userName") || "Employee";
+			<div class="card" style="margin-top: 24px;">
+				<h3>ℹ️ Information</h3>
+				<p style="color: var(--text-secondary); padding: 12px 0;">
+					As an employee, you can view products and sales data. Contact your manager for additional
+					permissions.
+				</p>
+			</div>
+		</main>
+	</div>
 
-    function navigate(page) {
-      window.location.href = page;
-    }
+	<script src="js/api.js"></script>
+	<script src="js/auth.js"></script>
+	<script src="js/pageTransition.js"></script>
+	<script src="js/theme.js"></script>
+	<script>
+		requireAuth(["employee"]);
 
-    function logout() {
-      if (confirm("Are you sure you want to logout?")) {
-        localStorage.clear();
-        window.location.href = "login.html";
-      }
-    }
+		document.getElementById("userName").textContent =
+			localStorage.getItem("userName") || "Employee";
 
-    async function loadStats() {
-      try {
-        const productsRes = await fetch(`${API_BASE}/products`, {
-          headers: { Authorization: "Bearer " + token }
-        });
-        if (productsRes.ok) {
-          const products = await productsRes.json();
-          document.getElementById("productCount").textContent = products.length;
-        }
+		function navigate(page) {
+			window.location.href = page;
+		}
 
-        const salesRes = await fetch(`${API_BASE}/sales/report`, {
-          headers: { Authorization: "Bearer " + token }
-        });
-        if (salesRes.ok) {
-          const sales = await salesRes.json();
-          document.getElementById("salesCount").textContent = sales.totalSales;
-        }
-      } catch (error) {
-        console.error("Error loading stats:", error);
-      }
-    }
+		async function loadStats() {
+			try {
+				const productsRes = await authFetch(`${API_BASE}/products`);
+				if (productsRes.ok) {
+					const products = await productsRes.json();
+					document.getElementById("productCount").textContent = products.length;
+				}
 
-    loadStats();
-  </script>
+				const salesRes = await authFetch(`${API_BASE}/sales/report`);
+				if (salesRes.ok) {
+					const sales = await salesRes.json();
+					document.getElementById("salesCount").textContent = sales.totalSales;
+				}
+			} catch (error) {
+				console.error("Error loading stats:", error);
+			}
+		}
+
+		loadStats();
+	</script>
+
 </body>
+
 </html>
