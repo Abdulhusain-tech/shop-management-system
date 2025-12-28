@@ -1,9 +1,14 @@
 const express = require("express");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db");
 const cors = require("cors");
+require("dotenv").config();
 
-dotenv.config();
+const connectDB = require("./config/db");
+
+const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
+const salesRoutes = require("./routes/salesRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+
 connectDB();
 
 const app = express();
@@ -11,18 +16,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/products", require("./routes/productRoutes"));
-app.use("/api/sales", require("./routes/salesRoutes"));
-app.use("/api/admin", require("./routes/adminRoutes"));
-
-// Health check
-app.get("/api", (req, res) => {
-  res.json({
-    message: "Shop Management System API",
-    status: "running"
-  });
+app.get("/", (req, res) => {
+  res.json({ message: "Shop Management System API", status: "running" });
 });
 
+app.use("/auth", authRoutes);
+app.use("/products", productRoutes);
+app.use("/sales", salesRoutes);
+app.use("/admin", adminRoutes);
+
+// ❌ DO NOT app.listen() on Vercel
 module.exports = app;
