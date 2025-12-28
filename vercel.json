@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "shop-management-system",
+
   "builds": [
     {
       "src": "backend/server.js",
@@ -11,25 +12,18 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "backend/server.js"
+      "source": "/api/(.*)",
+      "destination": "/backend/server.js"
     },
     {
-      "src": "/(.*\\.css|.*\\.js|.*\\.html)",
-      "dest": "frontend/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "frontend/login.html"
+      "source": "/(.*)",
+      "destination": "/frontend/$1"
     }
   ],
-  "env": {
-    "MONGO_URI": "@mongo_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "NODE_ENV": "production"
-  },
+
   "headers": [
     {
       "source": "/api/(.*)",
