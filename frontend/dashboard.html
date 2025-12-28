@@ -114,28 +114,36 @@
   </div>
 
   <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/pageTransition.js"></script>
   <script src="js/theme.js"></script>
   <script>
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    
-    if (!token) {
-      window.location.href = "login.html";
-    }
 
-    // Redirect to role-specific dashboard if available
-    if (role) {
-      const dashboards = {
-        admin: "admin-dashboard.html",
-        owner: "owner-dashboard.html",
-        employee: "employee-dashboard.html",
-        user: "user-dashboard.html"
-      };
+
+	requireAuth();     // chatgpt part
+
+	// chatgpt part
+
+    // const token = localStorage.getItem("token");
+    // const role = localStorage.getItem("role");
+    
+    // if (!token) {
+    //   window.location.href = "login.html";
+    // }
+
+    // // Redirect to role-specific dashboard if available
+    // if (role) {
+    //   const dashboards = {
+    //     admin: "admin-dashboard.html",
+    //     owner: "owner-dashboard.html",
+    //     employee: "employee-dashboard.html",
+    //     user: "user-dashboard.html"
+    //   };
       
-      if (dashboards[role]) {
-        window.location.href = dashboards[role];
-      }
-    }
+    //   if (dashboards[role]) {
+    //     window.location.href = dashboards[role];
+    //   }
+    // }
 
     document.getElementById("userName").textContent = localStorage.getItem("userName") || role || "User";
 
@@ -143,26 +151,25 @@
       window.location.href = page;
     }
 
-    function logout() {
-      if (confirm("Are you sure you want to logout?")) {
-        localStorage.clear();
-        window.location.href = "login.html";
-      }
-    }
+
+	//  chatgpt part
+
+    // function logout() {
+    //   if (confirm("Are you sure you want to logout?")) {
+    //     localStorage.clear();
+    //     window.location.href = "login.html";
+    //   }
+    // }
 
     async function loadStats() {
       try {
-        const productsRes = await fetch(`${API_BASE}/products`, {
-          headers: { Authorization: "Bearer " + token }
-        });
+        const productsRes = await authFetch(`${API_BASE}/products`);
         if (productsRes.ok) {
           const products = await productsRes.json();
           document.getElementById("productCount").textContent = products.length;
         }
 
-        const salesRes = await fetch(`${API_BASE}/sales/report`, {
-          headers: { Authorization: "Bearer " + token }
-        });
+        const salesRes = await authFetch(`${API_BASE}/sales/report`);
         if (salesRes.ok) {
           const sales = await salesRes.json();
           document.getElementById("revenueCount").textContent = "₹" + sales.totalRevenue.toLocaleString();
