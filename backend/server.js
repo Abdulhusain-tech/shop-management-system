@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const serverless = require("serverless-http");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
@@ -25,5 +26,8 @@ app.use("/products", productRoutes);
 app.use("/sales", salesRoutes);
 app.use("/admin", adminRoutes);
 
-// ❌ DO NOT app.listen() on Vercel
-module.exports = app;
+/**
+ * ✅ EXPORT SERVERLESS HANDLER
+ * ❌ DO NOT use app.listen()
+ */
+module.exports = serverless(app);
