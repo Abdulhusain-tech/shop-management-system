@@ -1,18 +1,28 @@
 const express = require("express");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
 const cors = require("cors");
+
+dotenv.config();
+connectDB();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// routes
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/products", require("./routes/products"));
-app.use("/api/sales", require("./routes/sales"));
-app.use("/api/admin", require("./routes/admin"));
+// Routes
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/sales", require("./routes/salesRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+// Health check
+app.get("/api", (req, res) => {
+  res.json({
+    message: "Shop Management System API",
+    status: "running"
+  });
 });
+
+module.exports = app;
