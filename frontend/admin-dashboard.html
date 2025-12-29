@@ -208,7 +208,6 @@
     requireAuth(["admin"]);
 
 
-// chatgpt part
 
 
     // const token = localStorage.getItem("token");
@@ -226,7 +225,6 @@
     }
 
 
-	// // chatgpt part
 
     // function logout() {
     //   if (confirm("Are you sure you want to logout?")) {
@@ -237,13 +235,13 @@
 
     async function loadStats() {
       try {
-        const productsRes = await authFetch(`${API_BASE}/products`);    // chatgpt part
+        const productsRes = await authFetch(`${API_BASE}/products`);   
         if (productsRes.ok) {
           const products = await productsRes.json();
           document.getElementById("productCount").textContent = products.length;
         }
 
-        const salesRes = await authFetch(`${API_BASE}/sales/report`);    // chatgpt part
+        const salesRes = await authFetch(`${API_BASE}/sales/report`);   
         if (salesRes.ok) {
           const sales = await salesRes.json();
           document.getElementById("revenueCount").textContent = "₹" + sales.totalRevenue.toLocaleString();
