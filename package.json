@@ -2,9 +2,9 @@
   "name": "shop-management-system",
   "version": "1.0.0",
   "description": "Shop Management System with role-based access",
-  "main": "backend/server.js",
+  "main": "api/index.js",
   "engines": {
-    "node": "20.x"
+    "node": "18.x"
   },
   "scripts": {
     "start": "node backend/server.js",
