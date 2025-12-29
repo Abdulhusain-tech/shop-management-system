@@ -52,5 +52,5 @@ app.use((req, res) => {
   res.status(404).json({ msg: "Route not found" });
 });
 
-// Export for Vercel
+// IMPORTANT: Export the app without listening
 module.exports = app;
