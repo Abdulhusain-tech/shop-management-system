@@ -1,27 +1,5 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "backend/server.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api(/.*)?",
-      "dest": "/backend/server.js"
-    },
-    {
-      "src": "/(css|js)/(.*)",
-      "dest": "/frontend/$1/$2"
-    },
-    {
-      "src": "/(.+\\.(html|png|jpg|jpeg|svg|ico))",
-      "dest": "/frontend/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/frontend/login.html"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/backend/server.js" }
   ]
 }
