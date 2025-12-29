@@ -3,26 +3,17 @@ const nodemailer = require("nodemailer");
 /**
  * Email Service
  * Handles sending emails for password reset, order confirmations, etc.
- * 
- * Setup:
- * 1. Install: npm install nodemailer
- * 2. Configure in .env:
- *    EMAIL_HOST=smtp.gmail.com
- *    EMAIL_PORT=587
- *    EMAIL_USER=your-email@gmail.com
- *    EMAIL_PASSWORD=your-app-password
- *    EMAIL_FROM=Shop Management <noreply@shop.com>
  */
 
 // Create transporter
 const createTransporter = () => {
   return nodemailer.createTransporter({
     host: process.env.EMAIL_HOST || "smtp.gmail.com",
-    port: process.env.EMAIL_PORT || 587,
+    port: parseInt(process.env.EMAIL_PORT) || 587,
     secure: false, // true for 465, false for other ports
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.EMAIL_PASSWORD
+      pass: process.env.EMAIL_PASSWORD // FIXED: was process.EMAIL_PASSWORD
     }
   });
 };
