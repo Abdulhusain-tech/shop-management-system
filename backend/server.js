@@ -10,6 +10,13 @@ const adminRoutes = require("./routes/adminRoutes");
 
 // Connect to MongoDB
 connectDB();
+// Import the app from api/index.js claude
+const app = require("../api/index.js");
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 const app = express();
 
