@@ -2,12 +2,12 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
-const connectDB = require("./config/db");
+const connectDB = require("../backend/config/db");
 
-const authRoutes = require("./routes/authRoutes");
-const productRoutes = require("./routes/productRoutes");
-const salesRoutes = require("./routes/salesRoutes");
-const adminRoutes = require("./routes/adminRoutes");
+const authRoutes = require("../backend/routes/authRoutes");
+const productRoutes = require("../backend/routes/productRoutes");
+const salesRoutes = require("../backend/routes/salesRoutes");
+const adminRoutes = require("../backend/routes/adminRoutes");
 
 // Connect to MongoDB
 connectDB();
