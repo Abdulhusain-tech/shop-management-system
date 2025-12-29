@@ -18,7 +18,7 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-const app = express();
+// const app = express();
 
 // Middleware
 app.use(cors({
